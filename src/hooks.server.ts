@@ -2,19 +2,18 @@ import connectDB from '$lib/db';
 import { JWT_SECRET } from '$env/static/private';
 import jwt from 'jsonwebtoken';
 
-connectDB(); // Call the function to establish a connection when the server starts
+connectDB();
 
 export async function handle({ event, resolve }) {
-	const { url, request } = event;
+	const { url, cookies } = event;
 
 	// Protect routes under /api/private/
 	if (url.pathname.startsWith('/api/users')) {
-		const authHeader = request.headers.get('Authorization');
+		const token = cookies.get('token'); // Retrieve token from cookies
 
-		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		if (!token) {
 			return new Response(JSON.stringify({ error: 'Missing or invalid token' }), { status: 401 });
 		}
-		const token = authHeader.split(' ')[1];
 
 		try {
 			const decoded = jwt.verify(token, JWT_SECRET);

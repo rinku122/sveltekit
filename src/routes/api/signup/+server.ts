@@ -1,12 +1,17 @@
-import { json } from '@sveltejs/kit';
+import { json, type Cookies } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 import User, { type IUser } from '$lib/models/user';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '$env/static/private';
 
-export const POST = async ({ request }: { request: Request }) => {
-	const { email, password } = (await request.json()) as { email: string; password: string };
-	if (!email || !password) {
+export const POST = async ({ request, cookies }: { request: Request; cookies: Cookies }) => {
+	const { email, password, name, phoneNumber } = (await request.json()) as {
+		email: string;
+		password: string;
+		name: string;
+		phoneNumber: string;
+	};
+	if (!email || !password || !name || !phoneNumber) {
 		return json({ error: 'Email and password are required' }, { status: 400 });
 	}
 
@@ -21,12 +26,20 @@ export const POST = async ({ request }: { request: Request }) => {
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	// Create a new user
-	const newUser: IUser = new User({ email, password: hashedPassword });
+	const newUser: IUser = new User({ email, password: hashedPassword, name, phoneNumber });
 	await newUser.save();
 
 	const token = jwt.sign({ id: newUser._id, email: newUser.email }, JWT_SECRET, {
 		expiresIn: '1h'
 	});
 
-	return json({ token });
+	cookies.set('token', token, {
+		httpOnly: true,
+		secure: true, // Use true in production to ensure secure cookies
+		sameSite: 'strict',
+		path: '/', // Token is available to all routes
+		maxAge: 60 * 60 * 24 // Token expires in 1 day
+	});
+
+	return json({ success: true });
 };

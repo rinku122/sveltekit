@@ -4,28 +4,24 @@
 
 	let email = '';
 	let password = '';
-	let name = '';
-	let phoneNumber = '';
 
-	async function signup() {
-		const res = await fetch('/api/signup', {
+	async function login() {
+		const res = await fetch('/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password, name, phoneNumber })
+			body: JSON.stringify({ email, password })
 		});
 
 		if (res.ok) {
 			auth.set({ isLoggedIn: true });
 			await goto('/dashboard');
 		} else {
-			console.error('Signup failed');
+			console.error('login failed');
 		}
 	}
 </script>
 
-<form on:submit|preventDefault={signup}>
-	<input type="text" bind:value={name} placeholder="Full Name" required />
-	<input type="tel" bind:value={phoneNumber} placeholder="Phone Number" required />
+<form on:submit|preventDefault={login}>
 	<input type="email" bind:value={email} placeholder="Email" required />
 	<input type="password" bind:value={password} placeholder="Password" required />
 	<button type="submit">Signup</button>
