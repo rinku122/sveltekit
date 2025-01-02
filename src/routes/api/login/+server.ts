@@ -1,10 +1,9 @@
+import { JWT_SECRET } from '$env/static/private';
 import User from '$lib/models/user';
 import type { Cookies } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 export async function POST({ request, cookies }: { request: Request; cookies: Cookies }) {
 	const { email, password } = await request.json();

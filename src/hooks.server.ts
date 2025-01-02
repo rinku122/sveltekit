@@ -14,7 +14,6 @@ export async function handle({ event, resolve }) {
 		if (!token) {
 			return new Response(JSON.stringify({ error: 'Missing or invalid token' }), { status: 401 });
 		}
-
 		try {
 			const decoded = jwt.verify(token, JWT_SECRET);
 			event.locals.user = decoded; // Attach user info to event.locals
