@@ -10,3 +10,11 @@ export const GET = async ({ locals }) => {
 
 	return json({ user });
 };
+
+export const POST = async ({ cookies }) => {
+	// Clear the auth cookie
+	cookies.delete('token', { path: '/' });
+
+	// Respond with success
+	return new Response(null, { status: 200 });
+};

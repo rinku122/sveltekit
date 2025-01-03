@@ -3,8 +3,7 @@
 	import { goto } from '$app/navigation';
 
 	export let data;
-
-	console.log(data, 'layout');
 </script>
 
+<h1>Welcome {data.user.name}</h1>
 <slot />
