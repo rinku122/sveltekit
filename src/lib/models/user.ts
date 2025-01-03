@@ -8,6 +8,7 @@ export interface IUser extends Document {
 	phoneNumber: string;
 	createdAt: Date;
 	updatedAt: Date;
+	role: 'admin' | 'user';
 }
 
 // Define the User schema
@@ -41,6 +42,10 @@ const userSchema: Schema<IUser> = new Schema(
 		updatedAt: {
 			type: Date,
 			default: Date.now
+		},
+		role: {
+			type: String,
+			required: true
 		}
 	},
 	{

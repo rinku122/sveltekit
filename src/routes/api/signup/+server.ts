@@ -26,10 +26,16 @@ export const POST = async ({ request, cookies }: { request: Request; cookies: Co
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	// Create a new user
-	const newUser: IUser = new User({ email, password: hashedPassword, name, phoneNumber });
+	const newUser: IUser = new User({
+		email,
+		password: hashedPassword,
+		name,
+		phoneNumber,
+		role: 'user'
+	});
 	await newUser.save();
 
-	const token = jwt.sign({ id: newUser._id, email: newUser.email }, JWT_SECRET, {
+	const token = jwt.sign({ id: newUser._id, email: newUser.email, role: 'user' }, JWT_SECRET, {
 		expiresIn: '1h'
 	});
 
