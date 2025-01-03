@@ -1,17 +1,13 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { auth } from '$lib/stores/auth';
+	import Form from '$lib/Form.svelte';
 
-	let email = '';
-	let password = '';
-	let name = '';
-	let phoneNumber = '';
-
-	async function signup() {
+	async function handleSignup(data) {
 		const res = await fetch('/api/signup', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password, name, phoneNumber })
+			body: JSON.stringify(data)
 		});
 
 		if (res.ok) {
@@ -21,12 +17,13 @@
 			console.error('Signup failed');
 		}
 	}
+
+	const fields = [
+		{ name: 'name', type: 'text', placeholder: 'Full Name', required: true },
+		{ name: 'phoneNumber', type: 'tel', placeholder: 'Phone Number', required: true },
+		{ name: 'email', type: 'email', placeholder: 'Email', required: true },
+		{ name: 'password', type: 'password', placeholder: 'Password', required: true }
+	];
 </script>
 
-<form on:submit|preventDefault={signup}>
-	<input type="text" bind:value={name} placeholder="Full Name" required />
-	<input type="tel" bind:value={phoneNumber} placeholder="Phone Number" required />
-	<input type="email" bind:value={email} placeholder="Email" required />
-	<input type="password" bind:value={password} placeholder="Password" required />
-	<button type="submit">Signup</button>
-</form>
+<Form {fields} buttonText="Signup" onSubmit={handleSignup} />
